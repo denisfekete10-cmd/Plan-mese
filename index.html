@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plan Mese - Constructor</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Plan Mese">
+<meta name="theme-color" content="#12100d">
+<title>Plan Mese - 7 Zile</title>
 <style>
   :root{
     --bg:#12100d;--panel:#1b1814;--panel2:#221e19;--line:#332d25;
@@ -12,24 +15,33 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);
-    line-height:1.45;padding:16px;max-width:1000px;margin:0 auto;-webkit-font-smoothing:antialiased}
-  h1{font-family:Georgia,serif;font-size:1.7rem;color:var(--gold);font-weight:600}
-  .sub{color:var(--dim);font-size:.85rem;margin-bottom:16px}
+    line-height:1.45;padding:14px;max-width:1000px;margin:0 auto;-webkit-font-smoothing:antialiased}
+  h1{font-family:Georgia,serif;font-size:1.55rem;color:var(--gold);font-weight:600}
+  .sub{color:var(--dim);font-size:.83rem;margin-bottom:14px}
+
+  .daynav{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+  .daynav button{flex:0 0 auto;padding:9px 14px;border:1px solid var(--line);background:var(--panel);
+    color:var(--dim);border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;white-space:nowrap}
+  .daynav button.active{background:var(--panel2);color:var(--gold);border-color:var(--bronze)}
+  .daynav button .g{font-size:.62rem;color:var(--green);display:block}
 
   .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-  .toolbar button{padding:9px 14px;border:1px solid var(--line);background:var(--panel);
-    color:var(--dim);border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s}
+  .toolbar button{padding:8px 13px;border:1px solid var(--line);background:var(--panel);
+    color:var(--dim);border-radius:10px;cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s}
   .toolbar button:hover{border-color:var(--bronze);color:var(--gold)}
 
   .totals{position:sticky;top:0;z-index:20;background:var(--panel);border:1px solid var(--line);
-    border-radius:14px;padding:12px;margin-bottom:18px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
-  .totals-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .tcol{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
-  .tcol h3{font-family:Georgia,serif;font-size:.95rem;color:var(--gold);margin-bottom:8px;font-weight:600}
-  .trow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
-  .metric .val{font-size:1.05rem;font-weight:700;font-family:Georgia,serif}
-  .metric .lab{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.4px}
-  .metric .tgt{font-size:.58rem;color:var(--dim)}
+    border-radius:14px;padding:11px;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .totals .thead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .totals .thead .dl{font-family:Georgia,serif;color:var(--gold);font-size:.95rem;font-weight:600}
+  .totals .thead .wk{font-size:.7rem;color:var(--dim)}
+  .totals-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tcol{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px}
+  .tcol h3{font-family:Georgia,serif;font-size:.85rem;color:var(--gold);margin-bottom:7px;font-weight:600}
+  .trow{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;text-align:center}
+  .metric .val{font-size:1rem;font-weight:700;font-family:Georgia,serif}
+  .metric .lab{font-size:.58rem;color:var(--dim);text-transform:uppercase;letter-spacing:.4px}
+  .metric .tgt{font-size:.55rem;color:var(--dim)}
   .bar{height:4px;background:var(--line);border-radius:3px;margin-top:4px;overflow:hidden}
   .bar span{display:block;height:100%;border-radius:3px;transition:.25s width}
   .cal .val{color:var(--gold)}.cal .bar span{background:var(--gold)}
@@ -38,58 +50,60 @@
   .fat .val{color:var(--red)}.fat .bar span{background:var(--red)}
   .over span{background:var(--red)!important}
 
-  .meal{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
-  .meal>h2{font-family:Georgia,serif;font-size:1.15rem;color:var(--gold);font-weight:600;margin-bottom:4px}
-  .meal .msum{font-size:.78rem;color:var(--bronze);margin-bottom:6px}
-  .meal .mstatus{font-size:.76rem;margin-bottom:12px;font-weight:600}
+  .meal{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:13px}
+  .meal>h2{font-family:Georgia,serif;font-size:1.1rem;color:var(--gold);font-weight:600;margin-bottom:3px}
+  .meal .mstatus{font-size:.74rem;margin-bottom:11px;font-weight:600}
   .meal .mstatus.ok{color:var(--green)}
   .meal .mstatus.warn{color:var(--red)}
-
-  .cat{margin-bottom:12px}
-  .cat-hd{font-size:.72rem;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+  .cat{margin-bottom:11px}
+  .cat-hd{font-size:.7rem;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
   .cat-hd .ct{color:var(--dim)}
-  .cat-hd .cnt{font-size:.72rem;letter-spacing:0;text-transform:none;padding:2px 9px;border-radius:20px;border:1px solid var(--line)}
+  .cat-hd .cnt{font-size:.7rem;letter-spacing:0;text-transform:none;padding:2px 9px;border-radius:20px;border:1px solid var(--line)}
   .cat-hd .cnt.need{color:var(--red);border-color:var(--red)}
   .cat-hd .cnt.done{color:var(--green);border-color:var(--green)}
   .cat-hd .cnt.full{color:var(--gold);border-color:var(--bronze)}
-  .chips{display:flex;flex-wrap:wrap;gap:7px}
-  .chip{display:flex;flex-direction:column;gap:2px;padding:8px 11px;border:1px solid var(--line);
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid var(--line);
     background:var(--bg);border-radius:10px;cursor:pointer;transition:.12s;min-width:0}
   .chip:hover{border-color:var(--bronze)}
   .chip.on{background:var(--panel2);border-color:var(--gold)}
-  .chip .cn{font-size:.86rem;font-weight:600}
+  .chip .cn{font-size:.85rem;font-weight:600}
   .chip.on .cn{color:var(--gold)}
-  .chip .cm{font-size:.68rem;color:var(--dim)}
-  .chip .cg{font-size:.66rem;color:var(--bronze)}
+  .chip .cm{font-size:.66rem;color:var(--dim)}
+  .chip .cg{font-size:.64rem;color:var(--bronze)}
 
-  .buildout{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;font-size:.82rem}
-  .buildout .bt{color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-size:.68rem;margin-bottom:6px}
-  .bplate{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .bp{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px}
-  .bp .who{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+  .buildout{margin-top:9px;border-top:1px dashed var(--line);padding-top:9px}
+  .buildout .bt{color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-size:.66rem;margin-bottom:6px}
+  .bplate{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .bp{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px}
+  .bp .who{font-size:.66rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
   .bp.d .who{color:var(--gold)}.bp.f .who{color:var(--blue)}
-  .bp .list{font-size:.76rem;color:var(--dim);line-height:1.6}
-  .bp .mac{font-size:.78rem;color:var(--txt);margin-top:6px;font-weight:600}
-  .empty{color:var(--dim);font-style:italic;font-size:.8rem}
+  .bp .list{font-size:.75rem;color:var(--dim);line-height:1.55}
+  .bp .mac{font-size:.76rem;color:var(--txt);margin-top:5px;font-weight:600}
+  .empty{color:var(--dim);font-style:italic;font-size:.78rem}
 
-  .foot{color:var(--dim);font-size:.75rem;text-align:center;margin-top:24px;border-top:1px solid var(--line);padding-top:14px}
-  @media(max-width:600px){
-    .totals-wrap{grid-template-columns:1fr}
-    .bplate{grid-template-columns:1fr}
-  }
+  .foot{color:var(--dim);font-size:.73rem;text-align:center;margin-top:22px;border-top:1px solid var(--line);padding-top:13px}
+  @media(max-width:600px){.totals-wrap{grid-template-columns:1fr}.bplate{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<h1>Plan Mese - Constructor</h1>
-<div class="sub">Fiecare masa are reguli: cate produse trebuie din fiecare categorie. Contorul iti arata cat ai selectat din cat trebuie, si nu te lasa sa depasesti maximul.</div>
+<h1>Plan Mese - 7 Zile</h1>
+<div class="sub">Fiecare zi are meniu diferit. Alegi/combini din optiuni ca sa nu mananci la fel toata saptamana. Total pe zi + medie pe saptamana. 100% offline.</div>
+
+<div class="daynav" id="daynav"></div>
 
 <div class="toolbar">
-  <button id="resetBtn">Reseteaza tot</button>
+  <button id="resetBtn">Reseteaza ziua</button>
   <button id="fillBtn">Umple recomandat</button>
+  <button id="fillWeekBtn">Umple toata saptamana</button>
   <button id="printBtn">Printeaza / PDF</button>
 </div>
 
 <div class="totals">
+  <div class="thead">
+    <span class="dl" id="dayLabel">Luni</span>
+    <span class="wk" id="weekAvg">medie saptamana: -</span>
+  </div>
   <div class="totals-wrap">
     <div class="tcol">
       <h3>Denis - tinta 2100</h3>
@@ -113,214 +127,124 @@
 </div>
 
 <div id="meals"></div>
-<div class="foot">Valori din date nutritionale standard (per 100g), mancare gatita/gata de consum. Verificate in Python. Portie familie ~70% din portia Denis. 100% offline.</div>
+<div class="foot">Valori din date nutritionale standard (per 100g), mancare gatita/gata de consum. Verificate in Python. Portie familie ~72% din portia Denis. Optiunile unei categorii au calorii aproape egale.</div>
 
 <script>
-function comp(id,name,dg,fg,k,p,c,f){return {id,name,dg,fg,k,p,c,f};}
-function macroOf(cp,who){
-  const g=who==='D'?cp.dg:cp.fg;
-  return {g,k:cp.k*g/100,p:cp.p*g/100,c:cp.c*g/100,f:cp.f*g/100};
+const DATA = {"P100": {"ou": [143, 12.6, 0.7, 9.5], "pui": [165, 31, 0, 3.6], "vita": [180, 30, 0, 6], "somon": [206, 22, 0, 13], "peste": [110, 24, 0, 1.5], "ton": [116, 26, 0, 1], "curcan": [135, 29, 0, 1.5], "tofu": [120, 13, 3, 7], "porc_slab": [195, 29, 0, 8], "creveti": [99, 24, 0, 0.3], "branzavaci": [98, 11, 3.4, 4.3], "iaurtg": [97, 9, 3.6, 5], "whey": [400, 80, 8, 6], "telemea": [270, 17, 1, 22], "mozzarella": [280, 22, 2, 21], "orez": [130, 2.7, 28, 0.3], "orez_brun": [123, 2.7, 26, 1], "paste": [158, 6, 31, 0.9], "cartofd": [90, 2, 21, 0.15], "cartof": [86, 2, 20, 0.1], "piure": [88, 2, 14, 3], "mamaliga": [85, 2, 18, 0.5], "quinoa": [120, 4.4, 21, 1.9], "cuscus": [112, 3.8, 23, 0.2], "paine": [250, 9, 43, 3.5], "lipie": [275, 8, 50, 4], "ovaz": [380, 13, 60, 7], "naut": [164, 9, 27, 2.6], "fasole": [127, 8.7, 23, 0.5], "linte": [116, 9, 20, 0.4], "legume": [35, 2, 6, 0.3], "broccoli": [34, 2.8, 7, 0.4], "salata": [15, 1.4, 2.9, 0.2], "rosie": [18, 0.9, 3.9, 0.2], "spanac": [23, 2.9, 3.6, 0.4], "ardei": [31, 1, 6, 0.3], "dovlecel": [17, 1.2, 3.1, 0.3], "vinete": [25, 1, 6, 0.2], "ciuperci": [22, 3.1, 3.3, 0.3], "castravete": [15, 0.7, 3.6, 0.1], "ulei": [884, 0, 0, 100], "avocado": [160, 2, 9, 15], "migdale": [579, 21, 22, 50], "nuci": [654, 15, 14, 65], "untarahide": [588, 25, 20, 50], "cascaval": [360, 25, 1, 28], "masline": [115, 0.8, 6, 11], "seminte": [559, 19, 20, 49], "banana": [89, 1.1, 23, 0.3], "mar": [52, 0.3, 14, 0.2], "fructe": [50, 1, 12, 0.3], "miere": [304, 0.3, 82, 0], "portocala": [47, 0.9, 12, 0.1], "pere": [57, 0.4, 15, 0.1], "capsuni": [32, 0.7, 7.7, 0.3], "struguri": [69, 0.7, 18, 0.2]}, "days": [{"name": "Luni", "gym": true, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d1mp_0", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d1mp_1", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}, {"id": "d1mp_2", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d1mc_0", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}, {"id": "d1mc_1", "name": "Ovaz", "dg": 55, "fg": 40, "key": "ovaz"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d1mf_0", "name": "Banana", "dg": 112, "fg": 80, "key": "banana"}, {"id": "d1mf_1", "name": "Fructe padure", "dg": 200, "fg": 145, "key": "fructe"}, {"id": "d1mf_2", "name": "Miere", "dg": 33, "fg": 25, "key": "miere"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d1mv_0", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}, {"id": "d1mv_1", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d1pp_0", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}, {"id": "d1pp_1", "name": "Vita slaba", "dg": 167, "fg": 120, "key": "vita"}, {"id": "d1pp_2", "name": "Peste alb", "dg": 273, "fg": 195, "key": "peste"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d1pc_0", "name": "Orez", "dg": 323, "fg": 235, "key": "orez"}, {"id": "d1pc_1", "name": "Paste", "dg": 266, "fg": 190, "key": "paste"}, {"id": "d1pc_2", "name": "Cartof dulce", "dg": 450, "fg": 325, "key": "cartofd"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d1pv_0", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d1pv_1", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}, {"id": "d1pv_2", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d1pe_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d1pe_1", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d1gp_0", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}, {"id": "d1gp_1", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}, {"id": "d1gp_2", "name": "Curcan", "dg": 119, "fg": 85, "key": "curcan"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d1gc_0", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d1gc_1", "name": "Mar", "dg": 250, "fg": 180, "key": "mar"}, {"id": "d1gc_2", "name": "Ovaz", "dg": 34, "fg": 25, "key": "ovaz"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d1cp_0", "name": "Peste alb", "dg": 227, "fg": 165, "key": "peste"}, {"id": "d1cp_1", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}, {"id": "d1cp_2", "name": "Ton conserva", "dg": 216, "fg": 155, "key": "ton"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d1cc_0", "name": "Piure cartof", "dg": 193, "fg": 140, "key": "piure"}, {"id": "d1cc_1", "name": "Orez", "dg": 131, "fg": 95, "key": "orez"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d1cv_0", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d1cv_1", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d1cv_2", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d1ce_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d1ce_1", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}]}]}]}, {"name": "Marti", "gym": true, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d2mp_0", "name": "Iaurt grecesc", "dg": 258, "fg": 185, "key": "iaurtg"}, {"id": "d2mp_1", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d2mp_2", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d2mc_0", "name": "Ovaz", "dg": 55, "fg": 40, "key": "ovaz"}, {"id": "d2mc_1", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d2mf_0", "name": "Fructe padure", "dg": 200, "fg": 145, "key": "fructe"}, {"id": "d2mf_1", "name": "Capsuni", "dg": 280, "fg": 200, "key": "capsuni"}, {"id": "d2mf_2", "name": "Migdale", "dg": 17, "fg": 10, "key": "migdale"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d2mv_0", "name": "Spanac", "dg": 217, "fg": 155, "key": "spanac"}, {"id": "d2mv_1", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d2pp_0", "name": "Vita slaba", "dg": 167, "fg": 120, "key": "vita"}, {"id": "d2pp_1", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}, {"id": "d2pp_2", "name": "Tofu", "dg": 250, "fg": 180, "key": "tofu"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d2pc_0", "name": "Paste", "dg": 266, "fg": 190, "key": "paste"}, {"id": "d2pc_1", "name": "Quinoa", "dg": 350, "fg": 250, "key": "quinoa"}, {"id": "d2pc_2", "name": "Orez brun", "dg": 341, "fg": 245, "key": "orez_brun"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d2pv_0", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}, {"id": "d2pv_1", "name": "Dovlecel", "dg": 260, "fg": 185, "key": "dovlecel"}, {"id": "d2pv_2", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d2pe_0", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}, {"id": "d2pe_1", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d2gp_0", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}, {"id": "d2gp_1", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}, {"id": "d2gp_2", "name": "Branza vaci", "dg": 163, "fg": 115, "key": "branzavaci"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d2gc_0", "name": "Mar", "dg": 250, "fg": 180, "key": "mar"}, {"id": "d2gc_1", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d2gc_2", "name": "Nuci", "dg": 20, "fg": 15, "key": "nuci"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d2cp_0", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}, {"id": "d2cp_1", "name": "Peste alb", "dg": 227, "fg": 165, "key": "peste"}, {"id": "d2cp_2", "name": "Tofu", "dg": 208, "fg": 150, "key": "tofu"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d2cc_0", "name": "Cartof dulce", "dg": 189, "fg": 135, "key": "cartofd"}, {"id": "d2cc_1", "name": "Orez", "dg": 131, "fg": 95, "key": "orez"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d2cv_0", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d2cv_1", "name": "Spanac", "dg": 217, "fg": 155, "key": "spanac"}, {"id": "d2cv_2", "name": "Ardei", "dg": 161, "fg": 115, "key": "ardei"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d2ce_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d2ce_1", "name": "Masline", "dg": 52, "fg": 35, "key": "masline"}]}]}]}, {"name": "Miercuri", "gym": false, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d3mp_0", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d3mp_1", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}, {"id": "d3mp_2", "name": "Iaurt grecesc", "dg": 258, "fg": 185, "key": "iaurtg"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d3mc_0", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}, {"id": "d3mc_1", "name": "Cuscus", "dg": 188, "fg": 135, "key": "cuscus"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d3mf_0", "name": "Banana", "dg": 112, "fg": 80, "key": "banana"}, {"id": "d3mf_1", "name": "Portocala", "dg": 213, "fg": 155, "key": "portocala"}, {"id": "d3mf_2", "name": "Unt arahide", "dg": 17, "fg": 10, "key": "untarahide"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d3mv_0", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}, {"id": "d3mv_1", "name": "Castravete", "dg": 260, "fg": 185, "key": "castravete"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d3pp_0", "name": "Somon", "dg": 146, "fg": 105, "key": "somon"}, {"id": "d3pp_1", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}, {"id": "d3pp_2", "name": "Cotlet porc slab", "dg": 154, "fg": 110, "key": "porc_slab"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d3pc_0", "name": "Quinoa", "dg": 350, "fg": 250, "key": "quinoa"}, {"id": "d3pc_1", "name": "Cartofi", "dg": 470, "fg": 340, "key": "cartof"}, {"id": "d3pc_2", "name": "Orez", "dg": 323, "fg": 235, "key": "orez"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d3pv_0", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d3pv_1", "name": "Ciuperci", "dg": 220, "fg": 160, "key": "ciuperci"}, {"id": "d3pv_2", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d3pe_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d3pe_1", "name": "Seminte", "dg": 11, "fg": 10, "key": "seminte"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d3gp_0", "name": "Curcan", "dg": 119, "fg": 85, "key": "curcan"}, {"id": "d3gp_1", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}, {"id": "d3gp_2", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d3gc_0", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d3gc_1", "name": "Pere", "dg": 228, "fg": 165, "key": "pere"}, {"id": "d3gc_2", "name": "Ovaz", "dg": 34, "fg": 25, "key": "ovaz"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d3cp_0", "name": "Ton conserva", "dg": 216, "fg": 155, "key": "ton"}, {"id": "d3cp_1", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}, {"id": "d3cp_2", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d3cc_0", "name": "Orez", "dg": 131, "fg": 95, "key": "orez"}, {"id": "d3cc_1", "name": "Piure cartof", "dg": 193, "fg": 140, "key": "piure"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d3cv_0", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}, {"id": "d3cv_1", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d3cv_2", "name": "Dovlecel", "dg": 260, "fg": 185, "key": "dovlecel"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d3ce_0", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}, {"id": "d3ce_1", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}]}]}]}, {"name": "Joi", "gym": true, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d4mp_0", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}, {"id": "d4mp_1", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d4mp_2", "name": "Whey", "dg": 62, "fg": 45, "key": "whey"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d4mc_0", "name": "Ovaz", "dg": 55, "fg": 40, "key": "ovaz"}, {"id": "d4mc_1", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d4mf_0", "name": "Capsuni", "dg": 280, "fg": 200, "key": "capsuni"}, {"id": "d4mf_1", "name": "Banana", "dg": 112, "fg": 80, "key": "banana"}, {"id": "d4mf_2", "name": "Migdale", "dg": 17, "fg": 10, "key": "migdale"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d4mv_0", "name": "Spanac", "dg": 217, "fg": 155, "key": "spanac"}, {"id": "d4mv_1", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d4pp_0", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}, {"id": "d4pp_1", "name": "Creveti", "dg": 303, "fg": 220, "key": "creveti"}, {"id": "d4pp_2", "name": "Vita slaba", "dg": 167, "fg": 120, "key": "vita"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d4pc_0", "name": "Orez", "dg": 323, "fg": 235, "key": "orez"}, {"id": "d4pc_1", "name": "Paste", "dg": 266, "fg": 190, "key": "paste"}, {"id": "d4pc_2", "name": "Cuscus", "dg": 375, "fg": 270, "key": "cuscus"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d4pv_0", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d4pv_1", "name": "Ardei", "dg": 161, "fg": 115, "key": "ardei"}, {"id": "d4pv_2", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d4pe_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d4pe_1", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d4gp_0", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}, {"id": "d4gp_1", "name": "Branza vaci", "dg": 163, "fg": 115, "key": "branzavaci"}, {"id": "d4gp_2", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d4gc_0", "name": "Mar", "dg": 250, "fg": 180, "key": "mar"}, {"id": "d4gc_1", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d4gc_2", "name": "Nuci", "dg": 20, "fg": 15, "key": "nuci"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d4cp_0", "name": "Peste alb", "dg": 227, "fg": 165, "key": "peste"}, {"id": "d4cp_1", "name": "Tofu", "dg": 208, "fg": 150, "key": "tofu"}, {"id": "d4cp_2", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d4cc_0", "name": "Cartof dulce", "dg": 189, "fg": 135, "key": "cartofd"}, {"id": "d4cc_1", "name": "Orez", "dg": 131, "fg": 95, "key": "orez"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d4cv_0", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d4cv_1", "name": "Vinete", "dg": 200, "fg": 145, "key": "vinete"}, {"id": "d4cv_2", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d4ce_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d4ce_1", "name": "Masline", "dg": 52, "fg": 35, "key": "masline"}]}]}]}, {"name": "Vineri", "gym": false, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d5mp_0", "name": "Iaurt grecesc", "dg": 258, "fg": 185, "key": "iaurtg"}, {"id": "d5mp_1", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d5mp_2", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d5mc_0", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}, {"id": "d5mc_1", "name": "Ovaz", "dg": 55, "fg": 40, "key": "ovaz"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d5mf_0", "name": "Banana", "dg": 112, "fg": 80, "key": "banana"}, {"id": "d5mf_1", "name": "Struguri", "dg": 145, "fg": 105, "key": "struguri"}, {"id": "d5mf_2", "name": "Unt arahide", "dg": 17, "fg": 10, "key": "untarahide"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d5mv_0", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}, {"id": "d5mv_1", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d5pp_0", "name": "Vita slaba", "dg": 167, "fg": 120, "key": "vita"}, {"id": "d5pp_1", "name": "Somon", "dg": 146, "fg": 105, "key": "somon"}, {"id": "d5pp_2", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d5pc_0", "name": "Cartofi", "dg": 470, "fg": 340, "key": "cartof"}, {"id": "d5pc_1", "name": "Orez brun", "dg": 341, "fg": 245, "key": "orez_brun"}, {"id": "d5pc_2", "name": "Paste", "dg": 266, "fg": 190, "key": "paste"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d5pv_0", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}, {"id": "d5pv_1", "name": "Spanac", "dg": 217, "fg": 155, "key": "spanac"}, {"id": "d5pv_2", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d5pe_0", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}, {"id": "d5pe_1", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d5gp_0", "name": "Curcan", "dg": 119, "fg": 85, "key": "curcan"}, {"id": "d5gp_1", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}, {"id": "d5gp_2", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d5gc_0", "name": "Pere", "dg": 228, "fg": 165, "key": "pere"}, {"id": "d5gc_1", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d5gc_2", "name": "Ovaz", "dg": 34, "fg": 25, "key": "ovaz"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d5cp_0", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}, {"id": "d5cp_1", "name": "Ton conserva", "dg": 216, "fg": 155, "key": "ton"}, {"id": "d5cp_2", "name": "Peste alb", "dg": 227, "fg": 165, "key": "peste"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d5cc_0", "name": "Piure cartof", "dg": 193, "fg": 140, "key": "piure"}, {"id": "d5cc_1", "name": "Cartof dulce", "dg": 189, "fg": 135, "key": "cartofd"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d5cv_0", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d5cv_1", "name": "Ardei", "dg": 161, "fg": 115, "key": "ardei"}, {"id": "d5cv_2", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d5ce_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d5ce_1", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}]}]}]}, {"name": "Sambata", "gym": false, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d6mp_0", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d6mp_1", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}, {"id": "d6mp_2", "name": "Iaurt grecesc", "dg": 258, "fg": 185, "key": "iaurtg"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d6mc_0", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}, {"id": "d6mc_1", "name": "Cuscus", "dg": 188, "fg": 135, "key": "cuscus"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d6mf_0", "name": "Portocala", "dg": 213, "fg": 155, "key": "portocala"}, {"id": "d6mf_1", "name": "Banana", "dg": 112, "fg": 80, "key": "banana"}, {"id": "d6mf_2", "name": "Migdale", "dg": 17, "fg": 10, "key": "migdale"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d6mv_0", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}, {"id": "d6mv_1", "name": "Castravete", "dg": 260, "fg": 185, "key": "castravete"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d6pp_0", "name": "Cotlet porc slab", "dg": 154, "fg": 110, "key": "porc_slab"}, {"id": "d6pp_1", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}, {"id": "d6pp_2", "name": "Peste alb", "dg": 273, "fg": 195, "key": "peste"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d6pc_0", "name": "Orez", "dg": 323, "fg": 235, "key": "orez"}, {"id": "d6pc_1", "name": "Mamaliga", "dg": 480, "fg": 345, "key": "mamaliga"}, {"id": "d6pc_2", "name": "Quinoa", "dg": 350, "fg": 250, "key": "quinoa"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d6pv_0", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d6pv_1", "name": "Ciuperci", "dg": 220, "fg": 160, "key": "ciuperci"}, {"id": "d6pv_2", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d6pe_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d6pe_1", "name": "Seminte", "dg": 11, "fg": 10, "key": "seminte"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d6gp_0", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}, {"id": "d6gp_1", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}, {"id": "d6gp_2", "name": "Branza vaci", "dg": 163, "fg": 115, "key": "branzavaci"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d6gc_0", "name": "Mar", "dg": 250, "fg": 180, "key": "mar"}, {"id": "d6gc_1", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d6gc_2", "name": "Nuci", "dg": 20, "fg": 15, "key": "nuci"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d6cp_0", "name": "Ton conserva", "dg": 216, "fg": 155, "key": "ton"}, {"id": "d6cp_1", "name": "Peste alb", "dg": 227, "fg": 165, "key": "peste"}, {"id": "d6cp_2", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d6cc_0", "name": "Orez", "dg": 131, "fg": 95, "key": "orez"}, {"id": "d6cc_1", "name": "Piure cartof", "dg": 193, "fg": 140, "key": "piure"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d6cv_0", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}, {"id": "d6cv_1", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d6cv_2", "name": "Dovlecel", "dg": 260, "fg": 185, "key": "dovlecel"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d6ce_0", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}, {"id": "d6ce_1", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}]}]}]}, {"name": "Duminica", "gym": false, "meals": [{"name": "Mic dejun", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d7mp_0", "name": "Branza vaci", "dg": 255, "fg": 185, "key": "branzavaci"}, {"id": "d7mp_1", "name": "Omleta 3 oua", "dg": 175, "fg": 125, "key": "ou"}, {"id": "d7mp_2", "name": "Iaurt grecesc", "dg": 258, "fg": 185, "key": "iaurtg"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d7mc_0", "name": "Ovaz", "dg": 55, "fg": 40, "key": "ovaz"}, {"id": "d7mc_1", "name": "Paine integrala", "dg": 84, "fg": 60, "key": "paine"}]}, {"t": "Fructe/extra", "min": 1, "max": 2, "items": [{"id": "d7mf_0", "name": "Banana", "dg": 112, "fg": 80, "key": "banana"}, {"id": "d7mf_1", "name": "Capsuni", "dg": 280, "fg": 200, "key": "capsuni"}, {"id": "d7mf_2", "name": "Unt arahide", "dg": 17, "fg": 10, "key": "untarahide"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d7mv_0", "name": "Spanac", "dg": 217, "fg": 155, "key": "spanac"}, {"id": "d7mv_1", "name": "Rosii", "dg": 220, "fg": 160, "key": "rosie"}]}]}, {"name": "Pranz", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d7pp_0", "name": "Piept pui", "dg": 182, "fg": 130, "key": "pui"}, {"id": "d7pp_1", "name": "Vita slaba", "dg": 167, "fg": 120, "key": "vita"}, {"id": "d7pp_2", "name": "Tofu", "dg": 250, "fg": 180, "key": "tofu"}]}, {"t": "Carbo", "min": 1, "max": 1, "items": [{"id": "d7pc_0", "name": "Paste", "dg": 266, "fg": 190, "key": "paste"}, {"id": "d7pc_1", "name": "Cartofi", "dg": 470, "fg": 340, "key": "cartof"}, {"id": "d7pc_2", "name": "Orez", "dg": 323, "fg": 235, "key": "orez"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d7pv_0", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d7pv_1", "name": "Broccoli", "dg": 147, "fg": 105, "key": "broccoli"}, {"id": "d7pv_2", "name": "Ardei", "dg": 161, "fg": 115, "key": "ardei"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d7pe_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d7pe_1", "name": "Avocado", "dg": 38, "fg": 25, "key": "avocado"}]}]}, {"name": "Gustare", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d7gp_0", "name": "Whey", "dg": 40, "fg": 30, "key": "whey"}, {"id": "d7gp_1", "name": "Curcan", "dg": 119, "fg": 85, "key": "curcan"}, {"id": "d7gp_2", "name": "Iaurt grecesc", "dg": 165, "fg": 120, "key": "iaurtg"}]}, {"t": "Carbo/fruct", "min": 1, "max": 2, "items": [{"id": "d7gc_0", "name": "Banana", "dg": 146, "fg": 105, "key": "banana"}, {"id": "d7gc_1", "name": "Pere", "dg": 228, "fg": 165, "key": "pere"}, {"id": "d7gc_2", "name": "Ovaz", "dg": 34, "fg": 25, "key": "ovaz"}]}]}, {"name": "Cina", "cats": [{"t": "Proteina", "min": 1, "max": 1, "items": [{"id": "d7cp_0", "name": "Peste alb", "dg": 227, "fg": 165, "key": "peste"}, {"id": "d7cp_1", "name": "Piept pui", "dg": 152, "fg": 110, "key": "pui"}, {"id": "d7cp_2", "name": "Tofu", "dg": 208, "fg": 150, "key": "tofu"}]}, {"t": "Carbo", "min": 0, "max": 1, "items": [{"id": "d7cc_0", "name": "Cartof dulce", "dg": 189, "fg": 135, "key": "cartofd"}, {"id": "d7cc_1", "name": "Orez", "dg": 131, "fg": 95, "key": "orez"}]}, {"t": "Legume", "min": 1, "max": 2, "items": [{"id": "d7cv_0", "name": "Salata verde", "dg": 220, "fg": 160, "key": "salata"}, {"id": "d7cv_1", "name": "Legume mix", "dg": 143, "fg": 105, "key": "legume"}, {"id": "d7cv_2", "name": "Vinete", "dg": 200, "fg": 145, "key": "vinete"}]}, {"t": "Extra", "min": 1, "max": 2, "items": [{"id": "d7ce_0", "name": "Ulei masline", "dg": 7, "fg": 5, "key": "ulei"}, {"id": "d7ce_1", "name": "Masline", "dg": 52, "fg": 35, "key": "masline"}]}]}]}]};
+const P100 = DATA.P100;
+const DAYS = DATA.days;
+const TARGET={D:{cal:2100,pro:165,carb:190,fat:65},F:{cal:1600,pro:95,carb:170,fat:55}};
+
+let curDay=0;
+// selection per day: sel[dayIndex] = Set of ids ; order for eviction
+const sel=DAYS.map(()=>new Set());
+const order=DAYS.map(()=>({}));
+let seq=0;
+
+function macroOf(item,who){
+  const g=who==='D'?item.dg:item.fg;const v=P100[item.key];
+  return {g,k:v[0]*g/100,p:v[1]*g/100,c:v[2]*g/100,f:v[3]*g/100};
 }
-const P100={
-  ou:[143,12.6,0.7,9.5],pui:[165,31,0,3.6],vita:[180,30,0,6],somon:[206,22,0,13],
-  peste:[110,24,0,1.5],ton:[116,26,0,1],curcan:[135,29,0,1.5],tofu:[120,13,3,7],
-  branzavaci:[98,11,3.4,4.3],iaurtg:[97,9,3.6,5],whey:[400,80,8,6],
-  orez:[130,2.7,28,0.3],paste:[158,6,31,0.9],cartofd:[90,2,21,0.15],piure:[88,2,14,3],
-  mamaliga:[85,2,18,0.5],quinoa:[120,4.4,21,1.9],paine:[250,9,43,3.5],ovaz:[380,13,60,7],
-  legume:[35,2,6,0.3],broccoli:[34,2.8,7,0.4],salata:[15,1.4,2.9,0.2],rosie:[18,0.9,3.9,0.2],
-  ulei:[884,0,0,100],avocado:[160,2,9,15],migdale:[579,21,22,50],untarahide:[588,25,20,50],
-  cascaval:[360,25,1,28],banana:[89,1.1,23,0.3],mar:[52,0.3,14,0.2],fructe:[50,1,12,0.3],miere:[304,0.3,82,0],
-};
-const cc=(id,name,dg,fg,key)=>comp(id,name,dg,fg,P100[key][0],P100[key][1],P100[key][2],P100[key][3]);
+function itemById(dayIdx,id){
+  let found=null;
+  DAYS[dayIdx].meals.forEach(meal=>meal.cats.forEach(cat=>cat.items.forEach(it=>{if(it.id===id)found=it;})));
+  return found;
+}
 
-// each cat: min, max (how many items required)
-const MEALS=[
-  {name:"Mic dejun", target:"~560 kcal", cats:[
-    {t:"Proteina", min:1, max:1, items:[
-      cc("md_p1","Omleta 3 oua",160,115,"ou"),
-      cc("md_p2","Piept pui",140,100,"pui"),
-      cc("md_p3","Branza vaci",235,170,"branzavaci"),
-      cc("md_p4","Iaurt grecesc",235,170,"iaurtg"),
-      cc("md_p5","Whey (2 scoop)",57,40,"whey"),
-    ]},
-    {t:"Carbo", min:1, max:1, items:[
-      cc("md_c1","Ovaz",50,35,"ovaz"),
-      cc("md_c2","Paine integrala",75,55,"paine"),
-      cc("md_c3","Orez",145,105,"orez"),
-    ]},
-    {t:"Fructe / extra", min:1, max:2, items:[
-      cc("md_f1","Banana",100,70,"banana"),
-      cc("md_f2","Fructe padure",180,130,"fructe"),
-      cc("md_f3","Miere",30,20,"miere"),
-      cc("md_f4","Migdale",16,10,"migdale"),
-      cc("md_f5","Unt arahide",15,10,"untarahide"),
-    ]},
-    {t:"Legume", min:1, max:2, items:[
-      cc("md_v1","Legume mix",150,110,"legume"),
-      cc("md_v2","Rosie",200,145,"rosie"),
-    ]},
-  ]},
-  {name:"Pranz", target:"~770 kcal", cats:[
-    {t:"Proteina", min:1, max:1, items:[
-      cc("pr_p1","Piept pui",170,120,"pui"),
-      cc("pr_p2","Vita slaba",155,110,"vita"),
-      cc("pr_p3","Somon",135,95,"somon"),
-      cc("pr_p4","Peste alb",255,185,"peste"),
-      cc("pr_p5","Tofu",233,170,"tofu"),
-    ]},
-    {t:"Carbo", min:1, max:1, items:[
-      cc("pr_c1","Orez",300,215,"orez"),
-      cc("pr_c2","Paste",245,175,"paste"),
-      cc("pr_c3","Cartof dulce",400,290,"cartofd"),
-      cc("pr_c4","Mamaliga",420,300,"mamaliga"),
-      cc("pr_c5","Quinoa",325,235,"quinoa"),
-    ]},
-    {t:"Legume", min:1, max:2, items:[
-      cc("pr_v1","Legume mix",150,110,"legume"),
-      cc("pr_v2","Broccoli",150,110,"broccoli"),
-      cc("pr_v3","Salata verde",200,145,"salata"),
-    ]},
-    {t:"Extra / grasimi", min:1, max:2, items:[
-      cc("pr_e1","Ulei masline",6,5,"ulei"),
-      cc("pr_e2","Avocado",31,20,"avocado"),
-      cc("pr_e3","Cascaval",14,10,"cascaval"),
-    ]},
-  ]},
-  {name:"Gustare (pre-sala Denis)", target:"~270 kcal", cats:[
-    {t:"Proteina", min:1, max:1, items:[
-      cc("gu_p1","Whey (1 scoop)",38,25,"whey"),
-      cc("gu_p2","Iaurt grecesc",155,110,"iaurtg"),
-      cc("gu_p3","Branza vaci",153,110,"branzavaci"),
-      cc("gu_p4","Curcan",111,80,"curcan"),
-    ]},
-    {t:"Carbo / fruct", min:1, max:2, items:[
-      cc("gu_c1","Banana",135,95,"banana"),
-      cc("gu_c2","Ovaz",32,25,"ovaz"),
-      cc("gu_c3","Paine integrala",48,35,"paine"),
-      cc("gu_c4","Mar",230,165,"mar"),
-    ]},
-    {t:"Extra", min:0, max:1, items:[
-      cc("gu_e1","Migdale",16,10,"migdale"),
-      cc("gu_e2","Miere",30,20,"miere"),
-    ]},
-  ]},
-  {name:"Cina", target:"~440 kcal", cats:[
-    {t:"Proteina", min:1, max:1, items:[
-      cc("ci_p1","Peste alb",209,150,"peste"),
-      cc("ci_p2","Piept pui",139,100,"pui"),
-      cc("ci_p3","Ton conserva",198,145,"ton"),
-      cc("ci_p4","Oua (2-3 buc)",160,115,"ou"),
-      cc("ci_p5","Tofu",192,140,"tofu"),
-    ]},
-    {t:"Carbo", min:0, max:1, items:[
-      cc("ci_c1","Piure cartof",182,130,"piure"),
-      cc("ci_c2","Cartof dulce",178,130,"cartofd"),
-      cc("ci_c3","Orez",123,90,"orez"),
-    ]},
-    {t:"Legume / salata", min:1, max:2, items:[
-      cc("ci_v1","Salata verde",200,145,"salata"),
-      cc("ci_v2","Legume mix",150,110,"legume"),
-      cc("ci_v3","Broccoli",150,110,"broccoli"),
-    ]},
-    {t:"Extra / grasimi", min:1, max:2, items:[
-      cc("ci_e1","Ulei masline",6,5,"ulei"),
-      cc("ci_e2","Avocado",31,20,"avocado"),
-    ]},
-  ]},
-];
+function renderNav(){
+  const nav=document.getElementById('daynav');nav.innerHTML='';
+  DAYS.forEach((d,i)=>{
+    const b=document.createElement('button');
+    b.className=i===curDay?'active':'';
+    b.innerHTML=d.name+(d.gym?'<span class="g">sala</span>':'<span class="g">&nbsp;</span>');
+    b.onclick=()=>{curDay=i;renderNav();renderDay();};
+    nav.appendChild(b);
+  });
+}
 
-const on=new Set();
-let seq=0; const order={}; // id -> selection sequence, to know which is oldest
-const RECOMMENDED=["md_p1","md_c2","md_f1","md_v2",
-  "pr_p1","pr_c1","pr_v1","pr_e1",
-  "gu_p1","gu_c1",
-  "ci_p1","ci_c1","ci_v1","ci_e1"];
+function catCount(dayIdx,cat){return cat.items.filter(x=>sel[dayIdx].has(x.id)).length;}
 
-function catCount(cat){return cat.items.filter(x=>on.has(x.id)).length;}
-
-function render(){
+function renderDay(){
+  document.getElementById('dayLabel').textContent=DAYS[curDay].name+(DAYS[curDay].gym?' (zi sala)':'');
   const wrap=document.getElementById('meals');wrap.innerHTML='';
-  MEALS.forEach(meal=>{
+  DAYS[curDay].meals.forEach(meal=>{
     const mEl=document.createElement('div');mEl.className='meal';
-    // meal-level status
     let complete=true;
-    meal.cats.forEach(cat=>{if(catCount(cat)<cat.min)complete=false;});
-    const statusTxt=complete?'&#10003; Masa completa':'&#9888; Mai selecteaza ca sa completezi masa';
-    mEl.innerHTML='<h2>'+meal.name+'</h2><div class="msum">tinta '+meal.target+'</div>'+
-      '<div class="mstatus '+(complete?'ok':'warn')+'">'+statusTxt+'</div>';
+    meal.cats.forEach(cat=>{if(catCount(curDay,cat)<cat.min)complete=false;});
+    mEl.innerHTML='<h2>'+meal.name+'</h2>'+
+      '<div class="mstatus '+(complete?'ok':'warn')+'">'+(complete?'&#10003; Masa completa':'&#9888; Mai selecteaza')+'</div>';
     meal.cats.forEach(cat=>{
       const cEl=document.createElement('div');cEl.className='cat';
-      const n=catCount(cat);
-      const ruleTxt = cat.min===cat.max ? (cat.min+' necesar'+(cat.min>1?'e':'')) :
-                      (cat.min===0 ? 'optional, max '+cat.max : cat.min+'-'+cat.max);
-      let cntCls='need';
-      if(n>=cat.min && n<cat.max) cntCls='done';
-      if(n>=cat.max) cntCls='full';
-      if(n>=cat.min && cat.min===cat.max) cntCls='full';
-      cEl.innerHTML='<div class="cat-hd"><span class="ct">'+cat.t+' &middot; '+ruleTxt+'</span>'+
-        '<span class="cnt '+cntCls+'">'+n+'/'+cat.max+'</span></div>';
+      const n=catCount(curDay,cat);
+      const ruleTxt=cat.min===cat.max?(cat.min+' necesar'+(cat.min>1?'e':'')):(cat.min===0?'optional, max '+cat.max:cat.min+'-'+cat.max);
+      let cls='need';
+      if(n>=cat.min && (cat.min===cat.max || n>=cat.max))cls='full';
+      else if(n>=cat.min)cls='done';
+      cEl.innerHTML='<div class="cat-hd"><span class="ct">'+cat.t+' &middot; '+ruleTxt+'</span><span class="cnt '+cls+'">'+n+'/'+cat.max+'</span></div>';
       const chips=document.createElement('div');chips.className='chips';
-      cat.items.forEach(cp=>{
-        const m=macroOf(cp,'D');
-        const isOn=on.has(cp.id);
-        const chip=document.createElement('div');
-        chip.className='chip'+(isOn?' on':'');
-        const gramLabel=cp.dg===cp.fg?cp.dg+'g':cp.dg+'/'+cp.fg+'g';
-        chip.innerHTML='<span class="cn">'+cp.name+'</span>'+
-          '<span class="cg">'+gramLabel+'</span>'+
+      cat.items.forEach(it=>{
+        const m=macroOf(it,'D');
+        const isOn=sel[curDay].has(it.id);
+        const chip=document.createElement('div');chip.className='chip'+(isOn?' on':'');
+        const gl=it.dg===it.fg?it.dg+'g':it.dg+'/'+it.fg+'g';
+        chip.innerHTML='<span class="cn">'+it.name+'</span><span class="cg">'+gl+'</span>'+
           '<span class="cm">'+Math.round(m.k)+' kcal - P'+Math.round(m.p)+' C'+Math.round(m.c)+' G'+Math.round(m.f)+'</span>';
-        chip.onclick=()=>toggle(cp,cat);
+        chip.onclick=()=>toggle(it,cat);
         chips.appendChild(chip);
       });
       cEl.appendChild(chips);
       mEl.appendChild(cEl);
     });
     const bo=document.createElement('div');bo.className='buildout';
-    bo.innerHTML='<div class="bt">Farfuria la aceasta masa</div>'+
-      '<div class="bplate">'+plateHtml(meal,'D')+plateHtml(meal,'F')+'</div>';
+    bo.innerHTML='<div class="bt">Farfuria la aceasta masa</div><div class="bplate">'+plate(meal,'D')+plate(meal,'F')+'</div>';
     mEl.appendChild(bo);
     wrap.appendChild(mEl);
   });
   recalc();
 }
 
-function plateHtml(meal,who){
+function plate(meal,who){
   const chosen=[];let K=0,P=0,C=0,F=0;
-  meal.cats.forEach(cat=>cat.items.forEach(cp=>{
-    if(on.has(cp.id)){const m=macroOf(cp,who);if(m.g>0)chosen.push(m.g+'g '+cp.name.toLowerCase());K+=m.k;P+=m.p;C+=m.c;F+=m.f;}
+  meal.cats.forEach(cat=>cat.items.forEach(it=>{
+    if(sel[curDay].has(it.id)){const m=macroOf(it,who);if(m.g>0)chosen.push(m.g+'g '+it.name.toLowerCase());K+=m.k;P+=m.p;C+=m.c;F+=m.f;}
   }));
-  const label=who==='D'?'Denis':'Familie';
-  const cls=who==='D'?'d':'f';
+  const lbl=who==='D'?'Denis':'Familie';const cls=who==='D'?'d':'f';
   const list=chosen.length?chosen.join(', '):'<span class="empty">nimic bifat</span>';
-  return '<div class="bp '+cls+'"><div class="who">'+label+'</div><div class="list">'+list+'</div>'+
+  return '<div class="bp '+cls+'"><div class="who">'+lbl+'</div><div class="list">'+list+'</div>'+
     '<div class="mac">'+Math.round(K)+' kcal - P'+Math.round(P)+' C'+Math.round(C)+' G'+Math.round(F)+'</div></div>';
 }
 
-function toggle(cp,cat){
-  if(on.has(cp.id)){on.delete(cp.id);delete order[cp.id];render();return;}
-  // adding a new one
-  const selected=cat.items.filter(x=>on.has(x.id));
+function toggle(it,cat){
+  const S=sel[curDay],O=order[curDay];
+  if(S.has(it.id)){S.delete(it.id);delete O[it.id];renderDay();return;}
+  const selected=cat.items.filter(x=>S.has(x.id));
   if(selected.length>=cat.max){
-    // evict the oldest selected in this category
-    let oldest=selected[0];
-    selected.forEach(x=>{if((order[x.id]||0)<(order[oldest.id]||0))oldest=x;});
-    on.delete(oldest.id);delete order[oldest.id];
+    let oldest=selected[0];selected.forEach(x=>{if((O[x.id]||0)<(O[oldest.id]||0))oldest=x;});
+    S.delete(oldest.id);delete O[oldest.id];
   }
-  on.add(cp.id);order[cp.id]=++seq;render();
+  S.add(it.id);O[it.id]=++seq;renderDay();
 }
 
-const TARGET={D:{cal:2100,pro:165,carb:190,fat:65},F:{cal:1600,pro:95,carb:170,fat:55}};
+function dayTotals(dayIdx,who){
+  let K=0,P=0,C=0,F=0;
+  DAYS[dayIdx].meals.forEach(meal=>meal.cats.forEach(cat=>cat.items.forEach(it=>{
+    if(sel[dayIdx].has(it.id)){const m=macroOf(it,who);K+=m.k;P+=m.p;C+=m.c;F+=m.f;}
+  })));
+  return {cal:K,pro:P,carb:C,fat:F};
+}
+
 function recalc(){
   ['D','F'].forEach(who=>{
-    let K=0,P=0,C=0,F=0;
-    MEALS.forEach(meal=>meal.cats.forEach(cat=>cat.items.forEach(cp=>{
-      if(on.has(cp.id)){const m=macroOf(cp,who);K+=m.k;P+=m.p;C+=m.c;F+=m.f;}
-    })));
-    setM(who,'Cal',Math.round(K),TARGET[who].cal);
-    setM(who,'Pro',Math.round(P),TARGET[who].pro);
-    setM(who,'Carb',Math.round(C),TARGET[who].carb);
-    setM(who,'Fat',Math.round(F),TARGET[who].fat);
+    const t=dayTotals(curDay,who);
+    setM(who,'Cal',Math.round(t.cal),TARGET[who].cal);
+    setM(who,'Pro',Math.round(t.pro),TARGET[who].pro);
+    setM(who,'Carb',Math.round(t.carb),TARGET[who].carb);
+    setM(who,'Fat',Math.round(t.fat),TARGET[who].fat);
   });
+  // week average (Denis)
+  let sum=0,cnt=0;
+  DAYS.forEach((d,i)=>{const t=dayTotals(i,'D');if(t.cal>0){sum+=t.cal;cnt++;}});
+  document.getElementById('weekAvg').textContent = cnt? ('medie Denis: '+Math.round(sum/cnt)+' kcal/zi ('+cnt+'/7 zile completate)') : 'medie saptamana: -';
 }
 function setM(who,id,val,tgt){
   document.getElementById(who+'_'+id).textContent=val;
@@ -329,13 +253,22 @@ function setM(who,id,val,tgt){
   bar.parentElement.classList.toggle('over',val>tgt*1.08);
 }
 
-function clearAll(){on.clear();for(const k in order)delete order[k];seq=0;}
-document.getElementById('resetBtn').onclick=()=>{clearAll();render();};
-document.getElementById('fillBtn').onclick=()=>{clearAll();RECOMMENDED.forEach(id=>{on.add(id);order[id]=++seq;});render();};
+// recommended = first item of each cat
+function fillDay(dayIdx){
+  sel[dayIdx].clear();for(const k in order[dayIdx])delete order[dayIdx][k];
+  DAYS[dayIdx].meals.forEach(meal=>meal.cats.forEach(cat=>{
+    for(let i=0;i<cat.min;i++){if(cat.items[i]){sel[dayIdx].add(cat.items[i].id);order[dayIdx][cat.items[i].id]=++seq;}}
+  }));
+}
+
+document.getElementById('resetBtn').onclick=()=>{sel[curDay].clear();for(const k in order[curDay])delete order[curDay][k];renderDay();};
+document.getElementById('fillBtn').onclick=()=>{fillDay(curDay);renderDay();};
+document.getElementById('fillWeekBtn').onclick=()=>{DAYS.forEach((d,i)=>fillDay(i));renderDay();};
 document.getElementById('printBtn').onclick=()=>window.print();
 
-RECOMMENDED.forEach(id=>{on.add(id);order[id]=++seq;});
-render();
+// init: fill all days recommended
+DAYS.forEach((d,i)=>fillDay(i));
+renderNav();renderDay();
 </script>
 </body>
 </html>
